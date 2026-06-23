@@ -1,5 +1,10 @@
 package db
 
+import (
+	"database/sql"
+	"time"
+)
+
 type Task struct {
 	ID      string `json:"id"`
 	Date    string `json:"date"`
@@ -20,4 +25,67 @@ func AddTask(task *Task) (int64, error) {
 	}
 
 	return res.LastInsertId()
+}
+
+func Tasks(limit int, search string) ([]*Task, error) {
+	var (
+		rows *sql.Rows
+		err  error
+	)
+
+	if search != "" {
+		if date, ok := parseSearchDate(search); ok {
+			rows, err = DB.Query(`
+				SELECT id, date, title, comment, repeat
+				FROM scheduler
+				WHERE date = ?
+				ORDER BY date
+				LIMIT ?
+			`, date, limit)
+		} else {
+			search = "%" + search + "%"
+			rows, err = DB.Query(`
+				SELECT id, date, title, comment, repeat
+				FROM scheduler
+				WHERE title LIKE ? OR comment LIKE ?
+				ORDER BY date
+				LIMIT ?
+			`, search, search, limit)
+		}
+	} else {
+		rows, err = DB.Query(`
+			SELECT id, date, title, comment, repeat
+			FROM scheduler
+			ORDER BY date
+			LIMIT ?
+		`, limit)
+	}
+
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	tasks := make([]*Task, 0)
+
+	for rows.Next() {
+		var task Task
+
+		if err := rows.Scan(&task.ID, &task.Date, &task.Title, &task.Comment, &task.Repeat); err != nil {
+			return nil, err
+		}
+
+		tasks = append(tasks, &task)
+	}
+
+	return tasks, rows.Err()
+}
+
+func parseSearchDate(search string) (string, bool) {
+	date, err := time.Parse("02.01.2006", search)
+	if err != nil {
+		return "", false
+	}
+
+	return date.Format("20060102"), true
 }
