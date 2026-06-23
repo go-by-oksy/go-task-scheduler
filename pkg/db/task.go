@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -88,4 +89,48 @@ func parseSearchDate(search string) (string, bool) {
 	}
 
 	return date.Format("20060102"), true
+}
+
+func GetTask(id string) (*Task, error) {
+	if id == "" {
+		return nil, fmt.Errorf("не указан идентификатор задачи")
+	}
+
+	var task Task
+
+	err := DB.QueryRow(`
+		SELECT id, date, title, comment, repeat
+		FROM scheduler
+		WHERE id = ?
+	`, id).Scan(&task.ID, &task.Date, &task.Title, &task.Comment, &task.Repeat)
+
+	if err != nil {
+		return nil, fmt.Errorf("задача не найдена")
+	}
+
+	return &task, nil
+}
+
+func UpdateTask(task *Task) error {
+	query := `
+		UPDATE scheduler
+		SET date = ?, title = ?, comment = ?, repeat = ?
+		WHERE id = ?
+	`
+
+	res, err := DB.Exec(query, task.Date, task.Title, task.Comment, task.Repeat, task.ID)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
+		return fmt.Errorf("задача не найдена")
+	}
+
+	return nil
 }
