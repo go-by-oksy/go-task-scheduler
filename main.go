@@ -1,6 +1,7 @@
 package main
 
 import (
+	"final-project/pkg/api"
 	"final-project/pkg/db"
 	"net/http"
 	"os"
@@ -20,6 +21,8 @@ func main() {
 	if err := db.Init(dbFile); err != nil {
 		panic(err)
 	}
+
+	api.Init()
 
 	http.Handle("/", http.FileServer(http.Dir("./web")))
 
