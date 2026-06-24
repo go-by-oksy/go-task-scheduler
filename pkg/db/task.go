@@ -91,8 +91,8 @@ func parseSearchDate(search string) (string, bool) {
 	return date.Format("20060102"), true
 }
 
-func GetTask(id string) (*Task, error) {
-	if id == "" {
+func GetTask(id int) (*Task, error) {
+	if id == 0 {
 		return nil, fmt.Errorf("не указан идентификатор задачи")
 	}
 
@@ -109,6 +109,24 @@ func GetTask(id string) (*Task, error) {
 	}
 
 	return &task, nil
+}
+
+func UpdateDate(next string, id int) error {
+	res, err := DB.Exec(`UPDATE scheduler SET date = ? WHERE id = ?`, next, id)
+	if err != nil {
+		return err
+	}
+
+	count, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if count == 0 {
+		return fmt.Errorf("задача не найдена")
+	}
+
+	return nil
 }
 
 func UpdateTask(task *Task) error {
@@ -135,30 +153,12 @@ func UpdateTask(task *Task) error {
 	return nil
 }
 
-func DeleteTask(id string) error {
-	if id == "" {
+func DeleteTask(id int) error {
+	if id == 0 {
 		return fmt.Errorf("не указан идентификатор задачи")
 	}
 
 	res, err := DB.Exec(`DELETE FROM scheduler WHERE id = ?`, id)
-	if err != nil {
-		return err
-	}
-
-	count, err := res.RowsAffected()
-	if err != nil {
-		return err
-	}
-
-	if count == 0 {
-		return fmt.Errorf("задача не найдена")
-	}
-
-	return nil
-}
-
-func UpdateDate(next string, id string) error {
-	res, err := DB.Exec(`UPDATE scheduler SET date = ? WHERE id = ?`, next, id)
 	if err != nil {
 		return err
 	}

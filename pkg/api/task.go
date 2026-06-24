@@ -13,7 +13,7 @@ func taskHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodDelete:
 		deleteTaskHandler(w, r)
 	default:
-		writeJSON(w, map[string]string{
+		writeJSON(w, http.StatusMethodNotAllowed, map[string]string{
 			"error": "метод не поддерживается",
 		})
 	}

@@ -58,7 +58,7 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 	var req SigninRequest
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		writeJSON(w, map[string]string{
+		writeJSON(w, http.StatusBadRequest, map[string]string{
 			"error": err.Error(),
 		})
 		return
@@ -67,7 +67,7 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 	pass := os.Getenv("TODO_PASSWORD")
 
 	if req.Password != pass {
-		writeJSON(w, map[string]string{
+		writeJSON(w, http.StatusBadRequest, map[string]string{
 			"error": "неверный пароль",
 		})
 		return
@@ -75,13 +75,13 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 
 	token, err := createToken(pass)
 	if err != nil {
-		writeJSON(w, map[string]string{
+		writeJSON(w, http.StatusBadRequest, map[string]string{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	writeJSON(w, map[string]string{
+	writeJSON(w, http.StatusBadRequest, map[string]string{
 		"token": token,
 	})
 }

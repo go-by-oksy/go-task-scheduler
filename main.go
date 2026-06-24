@@ -21,6 +21,7 @@ func main() {
 	if err := db.Init(dbFile); err != nil {
 		panic(err)
 	}
+	defer db.Close()
 
 	api.Init()
 
