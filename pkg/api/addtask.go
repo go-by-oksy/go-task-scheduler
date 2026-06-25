@@ -76,13 +76,13 @@ func addTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	id, err := db.AddTask(&task)
 	if err != nil {
-		writeJSON(w, http.StatusBadRequest, map[string]string{
+		writeJSON(w, http.StatusInternalServerError, map[string]string{
 			"error": err.Error(),
 		})
 		return
 	}
 
-	writeJSON(w, http.StatusBadRequest, map[string]string{
+	writeJSON(w, http.StatusOK, map[string]string{
 		"id": strconv.FormatInt(id, 10),
 	})
 }

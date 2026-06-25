@@ -67,7 +67,7 @@ func signinHandler(w http.ResponseWriter, r *http.Request) {
 	pass := os.Getenv("TODO_PASSWORD")
 
 	if req.Password != pass {
-		writeJSON(w, http.StatusBadRequest, map[string]string{
+		writeJSON(w, http.StatusUnauthorized, map[string]string{
 			"error": "неверный пароль",
 		})
 		return

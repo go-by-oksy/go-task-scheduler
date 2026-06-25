@@ -1,6 +1,8 @@
 package api
 
 import (
+	"database/sql"
+	"errors"
 	"final-project/pkg/db"
 	"net/http"
 	"strconv"
@@ -18,16 +20,30 @@ func doneTaskHandler(w http.ResponseWriter, r *http.Request) {
 
 	task, err := db.GetTask(id)
 	if err != nil {
-		writeJSON(w, http.StatusBadRequest, map[string]string{
-			"error": err.Error(),
+		if errors.Is(err, sql.ErrNoRows) {
+			writeJSON(w, http.StatusNotFound, map[string]string{
+				"error": "Задача не найдена",
+			})
+			return
+		}
+
+		writeJSON(w, http.StatusInternalServerError, map[string]string{
+			"error": "Внутренняя ошибка сервера",
 		})
 		return
 	}
 
 	if task.Repeat == "" {
 		if err := db.DeleteTask(id); err != nil {
-			writeJSON(w, http.StatusBadRequest, map[string]string{
-				"error": err.Error(),
+			if errors.Is(err, sql.ErrNoRows) {
+				writeJSON(w, http.StatusNotFound, map[string]string{
+					"error": "Задача не найдена",
+				})
+				return
+			}
+
+			writeJSON(w, http.StatusInternalServerError, map[string]string{
+				"error": "Внутренняя ошибка сервера",
 			})
 			return
 		}

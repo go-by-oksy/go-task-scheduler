@@ -1,6 +1,8 @@
 package api
 
 import (
+	"database/sql"
+	"errors"
 	"final-project/pkg/db"
 	"net/http"
 	"strconv"
@@ -16,6 +18,13 @@ func deleteTaskHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := db.DeleteTask(id); err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			writeJSON(w, http.StatusNotFound, map[string]string{
+				"error": "Задача не найдена",
+			})
+			return
+		}
+
 		writeJSON(w, http.StatusInternalServerError, map[string]string{
 			"error": "Внутренняя ошибка сервера",
 		})

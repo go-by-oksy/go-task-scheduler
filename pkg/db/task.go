@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 )
@@ -105,7 +106,10 @@ func GetTask(id int) (*Task, error) {
 	`, id).Scan(&task.ID, &task.Date, &task.Title, &task.Comment, &task.Repeat)
 
 	if err != nil {
-		return nil, fmt.Errorf("задача не найдена")
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, sql.ErrNoRows
+		}
+		return nil, err
 	}
 
 	return &task, nil
@@ -169,7 +173,7 @@ func DeleteTask(id int) error {
 	}
 
 	if count == 0 {
-		return fmt.Errorf("задача не найдена")
+		return sql.ErrNoRows
 	}
 
 	return nil
