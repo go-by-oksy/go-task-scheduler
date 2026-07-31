@@ -3,7 +3,7 @@ package api
 import (
 	"database/sql"
 	"errors"
-	"final-project/pkg/db"
+	"github.com/go-by-oksy/go-task-scheduler/pkg/db"
 	"net/http"
 	"strconv"
 )

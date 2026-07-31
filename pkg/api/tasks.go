@@ -1,7 +1,7 @@
 package api
 
 import (
-	"final-project/pkg/db"
+	"github.com/go-by-oksy/go-task-scheduler/pkg/db"
 	"net/http"
 )
 
