@@ -162,6 +162,8 @@ go test -run "^TestApp$" ./tests
 
 The GitHub Actions workflow automatically downloads dependencies, builds the application, starts the server and runs the application test on every push and pull request.
 
-## Author
+## Project Background
 
-Developed by [Oksana](https://github.com/go-by-oksy).
+This project was completed as part of the Yandex Practicum Go development course and is based on the provided project template.
+
+The Go backend implementation and subsequent portfolio improvements were completed by [Oksana](https://github.com/go-by-oksy).
