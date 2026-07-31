@@ -4,6 +4,11 @@ A task management web application built with Go.
 
 The application allows users to create, edit, complete and delete tasks, configure recurring schedules, and search tasks by text or date. Data is stored locally in SQLite.
 
+## Preview
+
+![Go Task Scheduler interface](docs/images/task-scheduler-1.png)
+![Go Task Scheduler interface](docs/images/task-scheduler-2.png)
+
 ## Features
 
 - Create, edit and delete tasks
