@@ -1,57 +1,167 @@
-Планировщик задач
+# Go Task Scheduler
 
-Описание проекта:
-Веб-приложение для ведения списка задач с поддержкой повторяющихся задач, поиска, редактирования, удаления и отметки задач выполненными. Данные хранятся в базе данных SQLite.
+A task management web application built with Go.
 
-Выполненные задания со звёздочкой
-- поддержка правил повторения `w` и `m`;
-- поиск задач по тексту;
-- поиск задач по дате;
-- настройка порта через переменную окружения `TODO_PORT`;
-- настройка пути к базе данных через переменную окружения `TODO_DBFILE`;
-- аутентификация через переменную окружения `TODO_PASSWORD`;
-- JWT-аутентификация;
-- добавление Dockerfile.
+The application allows users to create, edit, complete and delete tasks, configure recurring schedules, and search tasks by text or date. Data is stored locally in SQLite.
 
-Инструкция по запуску локально
-1. Установить зависимости:
+## Features
 
-go mod tidy
+- Create, edit and delete tasks
+- Mark tasks as completed
+- Search tasks by title, comment or date
+- Configure recurring tasks:
+  - yearly;
+  - every specified number of days;
+  - on selected weekdays;
+  - on selected days of the month
+- Store data in SQLite
+- Configure the application through environment variables
+- Optional password authentication using JWT
+- Run the application locally or in Docker
+- Automated build and test checks with GitHub Actions
 
-2. Запустить приложение:
+## Tech Stack
+
+- Go 1.25
+- `net/http`
+- SQLite
+- JWT
+- HTML, CSS and JavaScript
+- Docker
+- GitHub Actions
+
+## Project Structure
+
+```text
+.
+├── .github/workflows   # CI configuration
+├── pkg
+│   ├── api             # HTTP handlers and authentication
+│   └── db              # SQLite initialization and queries
+├── tests               # Application tests
+├── web                 # Frontend files
+├── Dockerfile
+├── go.mod
+└── main.go
+```
+
+## Running Locally
+
+### Requirements
+
+- Go 1.25 or newer
+- Git
+
+### Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/go-by-oksy/go-task-scheduler.git
+cd go-task-scheduler
+```
+
+Download dependencies:
+
+```bash
+go mod download
+```
+
+Run the application:
+
+```bash
+go run .
+```
+
+Open the application in a browser:
+
+```text
+http://localhost:7540
+```
+
+By default, the application:
+
+- runs on port `7540`;
+- creates `scheduler.db` in the project directory;
+- runs without authentication.
+
+## Configuration
+
+The application supports the following environment variables:
+
+| Variable | Description | Default |
+|---|---|---|
+| `TODO_PORT` | HTTP server port | `7540` |
+| `TODO_DBFILE` | Path to the SQLite database | `scheduler.db` |
+| `TODO_PASSWORD` | Password that enables authentication | empty |
+
+### PowerShell example
+
+```powershell
+$env:TODO_PORT="7540"
+$env:TODO_DBFILE="scheduler.db"
+$env:TODO_PASSWORD="change-me"
 
 go run .
+```
 
-3. При необходимости можно использовать переменные окружения:
+### Linux and macOS example
 
-TODO_PORT=7540
-TODO_DBFILE=scheduler.db
-TODO_PASSWORD=12345
+```bash
+TODO_PORT=7540 \
+TODO_DBFILE=scheduler.db \
+TODO_PASSWORD=change-me \
+go run .
+```
 
-После запуска приложение доступно по адресу:
-http://localhost:7540
+When `TODO_PASSWORD` is set, open:
 
-Чтобы прверить, как дейсвует аутентификация, нужно использовать следующий адрес:
+```text
 http://localhost:7540/login.html
+```
 
-Инструкция по запуску тестов
+## Running with Docker
 
-Запуск всех тестов:
-go test ./tests
+Build the image:
 
-Параметры файла `tests/settings.go`:
+```bash
+docker build -t go-task-scheduler .
+```
 
-var Port = 7540
-var DBFile = "../scheduler.db"
-var FullNextDate = true
-var Search = true
-var Token = ``
+Run the container:
 
-Сборка образа Docker:
-docker build -t todo-app .
+```bash
+docker run --rm \
+  -p 7540:7540 \
+  -v "${PWD}:/data" \
+  -e TODO_PASSWORD=change-me \
+  go-task-scheduler
+```
 
-Запуск контейнера:
-docker run --rm -p 7540:7540 -v ${PWD}:/data -e TODO_PASSWORD=12345 todo-app
+The SQLite database will be stored in the mounted `/data` directory.
 
-После запуска приложение доступно по адресу:
-http://localhost:7540 или http://localhost:7540/login.html
+Open:
+
+```text
+http://localhost:7540
+```
+
+## Testing
+
+First, start the application:
+
+```bash
+go run .
+```
+
+In another terminal, run the application test:
+
+```bash
+go test -run "^TestApp$" ./tests
+```
+
+The GitHub Actions workflow automatically downloads dependencies, builds the application, starts the server and runs the application test on every push and pull request.
+
+## Author
+
+Developed by [Oksana](https://github.com/go-by-oksy).
