@@ -7,6 +7,7 @@ The application allows users to create, edit, complete and delete tasks, configu
 ## Preview
 
 ![Go Task Scheduler interface](docs/images/task-scheduler-1.png)
+
 ![Go Task Scheduler interface](docs/images/task-scheduler-2.png)
 
 ## Features
