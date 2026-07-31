@@ -1,0 +1,22 @@
+# Local databases
+*.db
+*.db-shm
+*.db-wal
+
+# Compiled applications
+go-task-scheduler
+go-task-scheduler.exe
+todo-app
+todo-app.exe
+
+# Environment variables
+.env
+.env.local
+
+# IDE settings
+.vscode/
+.idea/
+
+# Operating system files
+.DS_Store
+Thumbs.db
