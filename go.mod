@@ -1,4 +1,4 @@
-module final-project
+module github.com/go-by-oksy/go-task-scheduler
 
 go 1.25.5
 
